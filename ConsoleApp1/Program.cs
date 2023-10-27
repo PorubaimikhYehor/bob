@@ -74,6 +74,7 @@ static int createHorisontalSelector(List<string> items, string? title)
       Console.WriteLine(new string(' ', items.ConvertAll(i => i.Length).Sum() + items.Count * 2));
       Console.SetCursorPosition(cursorPosLeft, cursorPos.Top - 1);
       Console.WriteLine(items[selectedIndex]);
+      Console.CursorVisible = true;
       return selectedIndex;
     }
   }  
