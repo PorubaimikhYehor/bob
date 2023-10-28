@@ -1,6 +1,50 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClassLibrary1;
 
+// Console.WriteLine("s===== set Symptoms =====");
+
+
+List<Symptom> symptoms = new List<Symptom>();
+Symptom symptom = new Symptom() { Code = "S1", Description = "Headache", };
+Medication medication = new Medication() { SymptomCode = symptom.Code, Name = "ibuprofen" };
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 0, Dosage = "400 mg" });
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 18, Dosage = "800 mg" });
+symptom.PrescribeMedication.Add(medication);
+symptoms.Add(symptom);
+
+symptom = new Symptom() { Code = "S2", Description = "Skin rashes", };
+medication = new Medication() { SymptomCode = symptom.Code, Name = "diphenhydramine" };
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 0, Dosage = "50 mg" });
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 18, Dosage = "300 mg" });
+symptom.PrescribeMedication.Add(medication);
+symptoms.Add(symptom);
+
+symptom = new Symptom() { Code = "S3", Description = "Dizziness", };
+medication = new Medication() { SymptomCode = symptom.Code, Name = "metformin", Contraindication = new string[] { "diabetes" } };
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 0, Dosage = "500 mg" });
+symptom.PrescribeMedication.Add(medication);
+medication = new Medication() { SymptomCode = symptom.Code, Name = "dimenhydrinate" };
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 0, Dosage = "50 mg" });
+medication.Dosages.Add(new Medication.MedicationDosage() { Age = 18, Dosage = "400 mg" });
+symptom.PrescribeMedication.Add(medication);
+symptoms.Add(symptom);
+
+// Console.WriteLine("s===== set Symptoms =====");
+/* testing */
+/* foreach (Symptom symp in symptoms)
+{
+  Console.WriteLine("10 => ");
+  Console.WriteLine(symp.GetPrescribeMedication(10, Array.Empty<string>()));
+  Console.WriteLine(symp.GetPrescribeMedication(10, new string[] { "Diabetes" }));
+  Console.WriteLine("20 => ");
+  Console.WriteLine(symp.GetPrescribeMedication(20, Array.Empty<string>()));
+  Console.WriteLine(symp.GetPrescribeMedication(20, new string[] { "Diabetes" }));
+  Console.WriteLine("18 => ");
+  Console.WriteLine(symp.GetPrescribeMedication(18, Array.Empty<string>()));
+  Console.WriteLine(symp.GetPrescribeMedication(18, new string[] { "Diabetes" }));
+} */
+/* testing end */
+
 Patiend patined = new Patiend();
 Console.WriteLine("Enter your (patient) details:");
 string errorMessage = string.Empty;
@@ -27,11 +71,11 @@ patined.SetMedicalHistory(Console.ReadLine() ?? string.Empty);
 Console.WriteLine();
 Console.WriteLine($"Welcome, {patined.GetName()}, {patined.GetAge()}.");
 Console.WriteLine("Which of the following symptoms do you have:");
-createHorisontalSelector(new List<string> {"S1", "S2", "S3"}, string.Empty);
+createHorisontalSelector(new List<string> { "S1", "S2", "S3" }, string.Empty);
 
 static int createHorisontalSelector(List<string> items, string? title)
 {
-  if(title == null)
+  if (title == null)
   {
     title = string.Empty;
   }
@@ -77,6 +121,6 @@ static int createHorisontalSelector(List<string> items, string? title)
       Console.CursorVisible = true;
       return selectedIndex;
     }
-  }  
+  }
 }
 
