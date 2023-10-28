@@ -1,6 +1,55 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace ClassLibrary1;
+public class MedicalBot
+{
+  static string BotName { get; set; } = string.Empty;
+  static string GetBotName() => BotName;
+  void GetPrescribeMedication(Patiend patiend, Symptom[] symptoms)
+  {
+    var symptom = symptoms.FirstOrDefault(s => s.Code == patiend.GetSymptomCode());
+    if (symptom != null)
+    {
+      patiend.SetPrescription(symptom.GetPrescribeMedication(patiend.GetAge(), patiend.GetMedicalHistory().Split(" ")));
+    }
+  }
+}
+public class Symptom
+{
+  public required string Code { get; set; }
+  public required string Description { get; set; }
+  public List<Medication> PrescribeMedication { get; set; } = new List<Medication>();
+  public string GetPrescribeMedication(int age, string[] contraindication)
+  {
+    string[] contraindicationToLower = contraindication.ToList().ConvertAll(c => c.ToLower()).ToArray();
+    var medications = PrescribeMedication
+    .FindAll(m => m.SymptomCode == Code && (contraindication == null || !m.Contraindication.Any(c => contraindicationToLower.Contains(c))))
+    .ConvertAll<string>(m => string.Format("{0} {1}", m.Name, m.GetDosage(age)));
+    return string.Join(" or ", medications);
+  }
+}
+public class Medication
+{
+  public required string SymptomCode { get; set; }
+  public required string Name { get; set; }
+  public string[] Contraindication { get; set; } = Array.Empty<string>();
+  public List<MedicationDosage> Dosages { get; set; } = new List<MedicationDosage>();
+
+  public string GetDosage(int age)
+  {
+    var dosage = Dosages.OrderByDescending(d => d.Age).ToList().Find(d => age >= d.Age);
+    return dosage == null ? string.Empty : dosage.Dosage;
+  }
+  public class MedicationDosage
+  {
+    public int? Age { get; set; } = -1;
+    public required string Dosage { get; set; } = string.Empty;
+
+  }
+}
+
+
 public class Patiend
 {
   private string _name = string.Empty;
@@ -113,8 +162,3 @@ public enum Gender
   OTHER
 }
 
-public class Symptom
-{
-  public required string Code { get; set; }
-  public required string Description { get; set; }
-}
