@@ -1,9 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ClassLibrary1;
-
+Console.Clear();
 // Console.WriteLine("s===== set Symptoms =====");
-
-
 List<Symptom> symptoms = new List<Symptom>();
 Symptom symptom = new Symptom() { Code = "S1", Description = "Headache", };
 Medication medication = new Medication() { SymptomCode = symptom.Code, Name = "ibuprofen" };
@@ -45,6 +43,11 @@ symptoms.Add(symptom);
 } */
 /* testing end */
 
+MedicalBot medicalBot;
+MedicalBot.BotName = "Bob";
+medicalBot = new MedicalBot();
+medicalBot.Greeting();
+
 Patiend patined = new Patiend();
 Console.WriteLine("Enter your (patient) details:");
 string errorMessage = string.Empty;
@@ -63,17 +66,28 @@ while (!patined.SetAge(Console.ReadLine() ?? string.Empty, out errorMessage))
 
 List<string> items = new List<string>();
 foreach (Gender item in Enum.GetValues(typeof(Gender))) items.Add(item.ToString());
-createHorisontalSelector(items, "Select the gender: ");
+var seletedGender = items[CreateHorisontalSelector(items, "Select the gender: ")];
+patined.SetGender(seletedGender, out errorMessage);
 
 Console.Write("Enter Medical History. Eg: Diabetes. Press Enter for None: ");
 patined.SetMedicalHistory(Console.ReadLine() ?? string.Empty);
 
+
+
 Console.WriteLine();
 Console.WriteLine($"Welcome, {patined.GetName()}, {patined.GetAge()}.");
 Console.WriteLine("Which of the following symptoms do you have:");
-createHorisontalSelector(new List<string> { "S1", "S2", "S3" }, string.Empty);
+List<string> symptomsSelectorList = symptoms.ConvertAll(s => string.Format("{0} / {1}", s.Code, s.Description));
+int selectedSyptomIndex = CreateHorisontalSelector(symptomsSelectorList, string.Empty);
+patined.SetSymptomCode(symptoms[selectedSyptomIndex].Code);
+medicalBot.GetPrescribeMedication(patined, symptoms);
+Console.WriteLine();
+Console.WriteLine("Your prescription based on your age, symptoms and medical history:");
+Console.WriteLine(patined.GetPrescription());
+Console.WriteLine();
+Console.WriteLine("Thank you for coming.");
 
-static int createHorisontalSelector(List<string> items, string? title)
+static int CreateHorisontalSelector(List<string> items, string? title)
 {
   if (title == null)
   {
