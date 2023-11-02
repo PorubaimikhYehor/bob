@@ -48,18 +48,18 @@ MedicalBot.BotName = "Bob";
 medicalBot = new MedicalBot();
 medicalBot.Greeting();
 
-Patiend patined = new Patiend();
+Patient patient = new Patient();
 Console.WriteLine("Enter your (patient) details:");
 string errorMessage = string.Empty;
 
 Console.Write("Enter Patient Name: ");
-while (!patined.SetName(Console.ReadLine() ?? string.Empty, out errorMessage))
+while (!patient.SetName(Console.ReadLine() ?? string.Empty, out errorMessage))
 {
   Console.WriteLine(errorMessage);
 }
 
 Console.Write("Enter Patient Age: ");
-while (!patined.SetAge(Console.ReadLine() ?? string.Empty, out errorMessage))
+while (!patient.SetAge(Console.ReadLine() ?? string.Empty, out errorMessage))
 {
   Console.WriteLine(errorMessage);
 }
@@ -67,23 +67,23 @@ while (!patined.SetAge(Console.ReadLine() ?? string.Empty, out errorMessage))
 List<string> items = new List<string>();
 foreach (Gender item in Enum.GetValues(typeof(Gender))) items.Add(item.ToString());
 var seletedGender = items[CreateHorisontalSelector(items, "Select the gender: ")];
-patined.SetGender(seletedGender, out errorMessage);
+patient.SetGender(seletedGender, out errorMessage);
 
 Console.Write("Enter Medical History. Eg: Diabetes. Press Enter for None: ");
-patined.SetMedicalHistory(Console.ReadLine() ?? string.Empty);
+patient.SetMedicalHistory(Console.ReadLine() ?? string.Empty);
 
 
 
 Console.WriteLine();
-Console.WriteLine($"Welcome, {patined.GetName()}, {patined.GetAge()}.");
+Console.WriteLine($"Welcome, {patient.GetName()}, {patient.GetAge()}.");
 Console.WriteLine("Which of the following symptoms do you have:");
 List<string> symptomsSelectorList = symptoms.ConvertAll(s => string.Format("{0} / {1}", s.Code, s.Description));
 int selectedSyptomIndex = CreateHorisontalSelector(symptomsSelectorList, string.Empty);
-patined.SetSymptomCode(symptoms[selectedSyptomIndex].Code);
-medicalBot.GetPrescribeMedication(patined, symptoms);
+patient.SetSymptomCode(symptoms[selectedSyptomIndex].Code);
+medicalBot.GetPrescribeMedication(patient, symptoms);
 Console.WriteLine();
 Console.WriteLine("Your prescription based on your age, symptoms and medical history:");
-Console.WriteLine(patined.GetPrescription());
+Console.WriteLine(patient.GetPrescription());
 Console.WriteLine();
 Console.WriteLine("Thank you for coming.");
 
